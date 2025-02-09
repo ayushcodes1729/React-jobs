@@ -1,40 +1,47 @@
+import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { BASE_URL } from '../utils/constants';
+import { useDispatch } from 'react-redux';
+import { addJob } from '../utils/jobSlice';
 
-const AddJobsPage = ({addJobSubmit}) => {
+const AddJobsPage = ({ addJobSubmit }) => {
   const [title, setTitle] = useState("");
-  const [type, setType] = useState("Full-Time");
+  const [jobType, setJobType] = useState("Full-Time");
   const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
+  const [jobDescription, setJobDescription] = useState("");
   const [salary, setSalary] = useState("Under $50K");
   const [companyName, setCompanyName] = useState("");
   const [companyDescription, setCompanyDescription] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const dispatch = useDispatch()
 
   const navigate = useNavigate();
-  
-  const submitForm = (e) =>{
-    e.preventDefault();
-    
-    const newJob= {
-      title,
-      type,
-      description,
-      location,
-      salary,
-      company : {
-        name: companyName,
-        description: companyDescription,
-        contactEmail,
-        contactPhone
-      },
-    };
 
-    addJobSubmit(newJob);
-
-    toast.success("Job Added Successfully")
+  const submitForm = async (e) => {
+    e.preventDefault()
+    try {
+      const res = await axios.post(BASE_URL + "/job/add",{
+        title,
+        jobType,
+        location,
+        jobDescription,
+        salary,
+        companyName,
+        companyDescription,
+        email,
+        phone
+      },{withCredentials: true})
+      console.log(res)
+      dispatch(addJob(res.data.data))
+      toast.success("Job Added Successfully")
+    } catch (error) {
+      throw new Error(error);
+      
+    }
 
     return navigate('/jobs');
   }
@@ -44,7 +51,7 @@ const AddJobsPage = ({addJobSubmit}) => {
         <div
           className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0"
         >
-          <form onSubmit={submitForm}>
+          <form>
             <h2 className="text-3xl text-center font-semibold mb-6">Add Job</h2>
 
             <div className="mb-4">
@@ -56,8 +63,8 @@ const AddJobsPage = ({addJobSubmit}) => {
                 name="type"
                 className="border rounded w-full py-2 px-3"
                 required
-                value={type}
-                onChange={(e) => setType(e.target.value)}
+                value={jobType}
+                onChange={(e) => setJobType(e.target.value)}
               >
                 <option value="Full-Time">Full-Time</option>
                 <option value="Part-Time">Part-Time</option>
@@ -93,8 +100,8 @@ const AddJobsPage = ({addJobSubmit}) => {
                 className="border rounded w-full py-2 px-3"
                 rows="4"
                 placeholder="Add any job duties, expectations, requirements, etc"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={jobDescription}
+                onChange={(e) => setJobDescription(e.target.value)}
               ></textarea>
             </div>
 
@@ -108,18 +115,18 @@ const AddJobsPage = ({addJobSubmit}) => {
                 className="border rounded w-full py-2 px-3"
                 required
                 value={salary}
-                onChange={(e)=>setSalary(e.target.value)}
+                onChange={(e) => setSalary(e.target.value)}
               >
                 <option value="Under $50K">Under $50K</option>
-                <option value="$50K - 60K">$50K - $60K</option>
-                <option value="$60K - 70K">$60K - $70K</option>
-                <option value="$70K - 80K">$70K - $80K</option>
-                <option value="$80K - 90K">$80K - $90K</option>
-                <option value="$90K - 100K">$90K - $100K</option>
-                <option value="$100K - 125K">$100K - $125K</option>
-                <option value="$125K - 150K">$125K - $150K</option>
-                <option value="$150K - 175K">$150K - $175K</option>
-                <option value="$175K - 200K">$175K - $200K</option>
+                <option value="$50K-$60K">$50K-$60K</option>
+                <option value="$60K-$70K">$60K-$70K</option>
+                <option value="$70K-$80K">$70K-$80K</option>
+                <option value="$80K-$90K">$80K-$90K</option>
+                <option value="$90K-$100K">$90K-$100K</option>
+                <option value="$100K-$125K">$100K-$125K</option>
+                <option value="$125K-$150K">$125K-$150K</option>
+                <option value="$150K-$175K">$150K-$175K</option>
+                <option value="$175K-$200K">$175K-$200K</option>
                 <option value="Over $200K">Over $200K</option>
               </select>
             </div>
@@ -136,7 +143,7 @@ const AddJobsPage = ({addJobSubmit}) => {
                 placeholder='Company Location'
                 required
                 value={location}
-                onChange={(e)=>setLocation(e.target.value)}
+                onChange={(e) => setLocation(e.target.value)}
               />
             </div>
 
@@ -153,7 +160,7 @@ const AddJobsPage = ({addJobSubmit}) => {
                 className="border rounded w-full py-2 px-3"
                 placeholder="Company Name"
                 value={companyName}
-                onChange={(e)=>setCompanyName(e.target.value)}
+                onChange={(e) => setCompanyName(e.target.value)}
               />
             </div>
 
@@ -170,7 +177,7 @@ const AddJobsPage = ({addJobSubmit}) => {
                 rows="4"
                 placeholder="What does your company do?"
                 value={companyDescription}
-                onChange={(e)=>setCompanyDescription(e.target.value)}
+                onChange={(e) => setCompanyDescription(e.target.value)}
               ></textarea>
             </div>
 
@@ -187,13 +194,13 @@ const AddJobsPage = ({addJobSubmit}) => {
                 className="border rounded w-full py-2 px-3"
                 placeholder="Email address for applicants"
                 required
-                value={contactEmail}
-                onChange={(e)=>setContactEmail(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="mb-4">
               <label
-                htmlFor="contact_phone"
+                htmlFor="phone"
                 className="block text-gray-700 font-bold mb-2"
               >Contact Phone</label
               >
@@ -203,13 +210,14 @@ const AddJobsPage = ({addJobSubmit}) => {
                 name="contact_phone"
                 className="border rounded w-full py-2 px-3"
                 placeholder="Optional phone for applicants"
-                value={contactPhone}
-                onChange={(e)=>setContactPhone(e.target.value)}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
               />
             </div>
 
             <div>
               <button
+                onClick={submitForm}
                 className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
                 type="submit"
               >
