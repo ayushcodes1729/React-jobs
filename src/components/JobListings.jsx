@@ -20,7 +20,7 @@ export default function JobListings({isHome = false}) {
             try {
                 const res = await axios.get(apiUrl, {withCredentials : true});
                 // const data =await res.json();
-                console.log(res.data)
+                // console.log(res.data)
                 // setJobs(data);
                 dispatch(addFeed(res.data))
                 // console.log(jobs);

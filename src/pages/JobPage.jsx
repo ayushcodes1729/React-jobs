@@ -5,10 +5,11 @@ import { Link, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import { FaLocationDot } from 'react-icons/fa6';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
-function JobPage({deleteJob}) {
-    const { id } = useParams();
-    const job = useLoaderData();
+function JobPage() {
+    // const { id } = useParams();
+    const job = useSelector((store)=>store.job);
     const navigate = useNavigate();
     const onDeleteClick= (jobId) => {
         const confirm = window.confirm('Are you sure you want to delete this listing ?')
@@ -58,7 +59,7 @@ function JobPage({deleteJob}) {
                             <div
                                 className="bg-white p-6 rounded-lg shadow-md text-center md:text-left"
                             >
-                                <div className="text-gray-500 mb-4">{job.type}</div>
+                                <div className="text-gray-500 mb-4">{job.jobType}</div>
                                 <h1 className="text-3xl font-bold mb-4">
                                     {job.title}
                                 </h1>
@@ -76,7 +77,7 @@ function JobPage({deleteJob}) {
                                 </h3>
 
                                 <p className="mb-4">
-                                    {job.description}
+                                    {job.jobDescription}
                                 </p>
 
                                 <h3 className="text-indigo-800 text-lg font-bold mb-2">Salary</h3>
@@ -91,10 +92,10 @@ function JobPage({deleteJob}) {
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <h3 className="text-xl font-bold mb-6">Company Info</h3>
 
-                                <h2 className="text-2xl">{job.company.name}</h2>
+                                <h2 className="text-2xl">{job.companyName}</h2>
 
                                 <p className="my-2">
-                                    {job.company.description}
+                                    {job.companyDescription}
                                 </p>
 
                                 <hr className="my-4" />
@@ -102,12 +103,12 @@ function JobPage({deleteJob}) {
                                 <h3 className="text-xl">Contact Email:</h3>
 
                                 <p className="my-2 bg-indigo-100 p-2 font-bold">
-                                    {job.company.contactEmail}
+                                    {job.email}
                                 </p>
 
                                 <h3 className="text-xl">Contact Phone:</h3>
 
-                                <p className="my-2 bg-indigo-100 p-2 font-bold">{job.company.contactPhone}</p>
+                                <p className="my-2 bg-indigo-100 p-2 font-bold">{job.phone}</p>
                             </div>
 
                             {/* <!-- Manage --> */}
@@ -131,10 +132,10 @@ function JobPage({deleteJob}) {
     )
 }
 
-const jobLoader = async ({ params }) => {
-    const res = await fetch(`/api/jobs/${params.id}`)
-    const data = await res.json();
-    return data
-}
+// const jobLoader = async ({ params }) => {
+//     const res = await fetch(`/api/jobs/${params.id}`)
+//     const data = await res.json();
+//     return data
+// }
 
-export { JobPage as default, jobLoader }
+export default JobPage

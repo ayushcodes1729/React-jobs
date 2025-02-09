@@ -1,16 +1,34 @@
+import axios from 'axios';
 import React from 'react'
 import { useState } from 'react'
 import { FaMapMarker } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from '../utils/constants';
+import { useDispatch } from 'react-redux';
+import {addJob} from "../utils/jobSlice"
 
 export default function JobListing({ job }) {
     const [showFullDescription, setShowFullDescription] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     let description = job.jobDescription;
 
     if (!showFullDescription) {
         description = description.substring(0, 90) + '...';
     }
+
+    const handleRead = async () => {
+        try {
+            const res = await axios.get(BASE_URL + `/job/${job._id}`, { withCredentials: true });
+            console.log(res.data);
+            dispatch(addJob(res.data.data)); // FIXED
+            navigate(`/jobs/${job._id}`);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    
     return (
         <div className="bg-white rounded-xl shadow-md relative">
             <div className="p-4">
@@ -33,12 +51,12 @@ export default function JobListing({ job }) {
                         <FaMapMarker className='inline text-lg mb-1 mr-1' />
                         {job.location}
                     </div>
-                    <Link
-                        to={`/jobs/${job.id}`}
+                    <button
+                        onClick={handleRead}
                         className="h-[36px] bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-center text-sm"
                     >
                         Read More
-                    </Link>
+                    </button>
                 </div>
             </div>
         </div>

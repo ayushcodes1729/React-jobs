@@ -4,7 +4,7 @@ import HomePage from './pages/HomePage';
 import MainLayout from './Layout/MainLayout';
 import JobsPage from './pages/JobsPage';
 import NotFoundPage from './pages/NotFoundPage';
-import JobPage, { jobLoader } from './pages/JobPage';
+import JobPage from './pages/JobPage';
 import AddJobsPage from './pages/AddJobsPage';
 import EditJob from './pages/EditJob';
 import { Provider } from 'react-redux';
@@ -48,8 +48,8 @@ export default function App() {
     <Route path='/' element={<MainLayout />}>
       <Route index element={<HomePage />} />
       <Route path='/jobs' element={<JobsPage />} />
-      <Route path='/edit-job/:id' element={<EditJob updateJobSubmit={updateJob} />} loader={jobLoader} />
-      <Route path='/jobs/:id' element={<JobPage deleteJob={deleteJob} />} loader={jobLoader} />
+      <Route path='/edit-job/:id' element={<EditJob updateJobSubmit={updateJob} />} />
+      <Route path='/jobs/:id' element={<JobPage />}/>
       <Route path='/add-job' element={<AddJobsPage addJobSubmit={addJob} />} />
       <Route path='*' element={<NotFoundPage />} />
     </Route>
