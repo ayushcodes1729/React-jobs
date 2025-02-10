@@ -21,7 +21,7 @@ export default function JobListing({ job }) {
     const handleRead = async () => {
         try {
             const res = await axios.get(BASE_URL + `/job/${job._id}`, { withCredentials: true });
-            console.log(res.data);
+            // console.log(res.data);
             dispatch(addJob(res.data.data)); // FIXED
             // localStorage.setItem('job', JSON.stringify(res.data.data))
             navigate(`/jobs/${job._id}`);

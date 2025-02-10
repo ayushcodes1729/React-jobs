@@ -41,7 +41,7 @@ export default function JobListings({isHome = false}) {
                 
                     {loading ? (<Spinner loading={loading}/>) : (<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {feed.map((job) => (
-                            <JobListing key={job.id} job={job}/>
+                            <JobListing key={job._id} job={job}/>
                         ))}
                     </div>
                         

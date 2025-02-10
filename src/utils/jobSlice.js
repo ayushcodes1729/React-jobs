@@ -8,7 +8,7 @@ const jobSlice = createSlice({
         addJob(state,action){
             return action.payload;
         },
-        removeUser(state,action){
+        removeJob(state,action){
             return null
         }
     }

@@ -5,34 +5,43 @@ import { Link, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import { FaLocationDot } from 'react-icons/fa6';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {removeJob} from "../utils/jobSlice"
+import axios from 'axios';
+import { BASE_URL } from '../utils/constants';
 
 function JobPage() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     // const { id } = useParams();
-    const job = useSelector((store)=>store.job);
+    const job = useSelector((store) => store.job);
     // const [job, setJob] = useState(jobFromStore || JSON.parse(localStorage.getItem('job')));
 
     useEffect(() => {
         if (!job) {
             navigate('/jobs'); // Redirect if no job found
         }
-    }, [job, navigate]);    
-    
-    if (!job){
+    }, [job, navigate]);
+
+    if (!job) {
 
         return <div>Loading...</div>
     }
-    const onDeleteClick= (jobId) => {
-        const confirm = window.confirm('Are you sure you want to delete this listing ?')
+    const onDeleteClick = async() => {
+        try {
+            const confirm = window.confirm('Are you sure you want to delete this listing ?')
 
-        if (!confirm) return;
+            if (!confirm) return;
 
-        deleteJob(jobId);
+            await axios.delete(BASE_URL+ `/job/delete/${job._id}`,{withCredentials: true});
+            dispatch(removeJob());
 
-        toast.success("Job Deleted Successfully")
+            toast.success("Job Deleted Successfully")
 
-        navigate('/jobs');
+            navigate('/jobs');
+        } catch (error) {
+            throw new Error(error);
+        }
     }
     // const [job,setJob]= useState(null);
     // const [loading, setLoading]= useState(true);
@@ -59,7 +68,7 @@ function JobPage() {
                         to="/jobs"
                         className="text-indigo-500 hover:text-indigo-600 flex items-center"
                     >
-                        <FaArrowLeft className='mr-2'/> Back to Job Listings
+                        <FaArrowLeft className='mr-2' /> Back to Job Listings
                     </Link>
                 </div>
             </section>
@@ -78,7 +87,7 @@ function JobPage() {
                                 <div
                                     className="text-gray-500 mb-4 flex align-middle justify-center md:justify-start"
                                 >
-                                    <FaLocationDot className='text-lg text-orange-700 mr-2'/>
+                                    <FaLocationDot className='text-lg text-orange-700 mr-2' />
                                     <p className="text-orange-700">{job.location}</p>
                                 </div>
                             </div>
@@ -130,7 +139,7 @@ function JobPage() {
                                     to={`/edit-job/${job.id}`}
                                     className="bg-indigo-500 hover:bg-indigo-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
                                 >Edit Job</Link>
-                                <button onClick={()=> onDeleteClick(job.id)}
+                                <button onClick={onDeleteClick}
                                     className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block"
                                 >
                                     Delete Job
