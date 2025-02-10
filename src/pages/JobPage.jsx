@@ -8,9 +8,21 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 
 function JobPage() {
+    const navigate = useNavigate();
     // const { id } = useParams();
     const job = useSelector((store)=>store.job);
-    const navigate = useNavigate();
+    // const [job, setJob] = useState(jobFromStore || JSON.parse(localStorage.getItem('job')));
+
+    useEffect(() => {
+        if (!job) {
+            navigate('/jobs'); // Redirect if no job found
+        }
+    }, [job, navigate]);    
+    
+    if (!job){
+
+        return <div>Loading...</div>
+    }
     const onDeleteClick= (jobId) => {
         const confirm = window.confirm('Are you sure you want to delete this listing ?')
 
