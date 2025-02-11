@@ -48,7 +48,7 @@ export default function App() {
     <Route path='/' element={<MainLayout />}>
       <Route index element={<HomePage />} />
       <Route path='/jobs' element={<JobsPage />} />
-      <Route path='/edit-job/:id' element={<EditJob updateJobSubmit={updateJob} />} />
+      <Route path='/edit-job/:id' element={<EditJob />} />
       <Route path='/jobs/:id' element={<JobPage />}/>
       <Route path='/add-job' element={<AddJobsPage addJobSubmit={addJob} />} />
       <Route path='*' element={<NotFoundPage />} />

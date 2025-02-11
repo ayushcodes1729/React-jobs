@@ -17,14 +17,18 @@ const AddJobsPage = ({ addJobSubmit }) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
+  const [error, setError] = useState("");
+
+
   const dispatch = useDispatch()
 
   const navigate = useNavigate();
 
   const submitForm = async (e) => {
     e.preventDefault()
+    setError("")
     try {
-      const res = await axios.post(BASE_URL + "/job/add",{
+      const res = await axios.post(BASE_URL + "/job/add", {
         title,
         jobType,
         location,
@@ -34,16 +38,17 @@ const AddJobsPage = ({ addJobSubmit }) => {
         companyDescription,
         email,
         phone
-      },{withCredentials: true})
-      console.log(res)
+      }, { withCredentials: true })
+      // console.log(res)
       dispatch(addJob(res.data.data))
       toast.success("Job Added Successfully")
+      return navigate('/jobs');
+
     } catch (error) {
-      throw new Error(error);
-      
+      // console.log(error.response.data)
+      setError(error?.response?.data || "Something Went Wrong");
     }
 
-    return navigate('/jobs');
   }
   return (
     <section className="bg-indigo-50">
@@ -214,7 +219,7 @@ const AddJobsPage = ({ addJobSubmit }) => {
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
-
+            <p className='text-red-500'>{error}</p>
             <div>
               <button
                 onClick={submitForm}

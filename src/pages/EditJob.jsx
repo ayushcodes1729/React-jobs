@@ -2,46 +2,53 @@ import React from 'react'
 import { Link, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { addJob } from "../utils/jobSlice"
+import axios from 'axios';
+import { BASE_URL } from '../utils/constants';
 
-const EditJob = ({updateJobSubmit}) => {
-    const job = useLoaderData();
+const EditJob = () => {
+    const dispatch = useDispatch();
+    const job = useSelector((store) => store.job);
+    // const { id } = useParams();
+    // console.log(id);
+    const [error, setError] = useState("");
     const [title, setTitle] = useState(job.title);
-    const [type, setType] = useState(job.type);
+    const [jobType, setJobType] = useState(job.jobType);
     const [location, setLocation] = useState(job.location);
-    const [description, setDescription] = useState(job.description);
+    const [jobDescription, setJobDescription] = useState(job.jobDescription ? job?.jobDescription : "");
     const [salary, setSalary] = useState(job.salary);
-    const [companyName, setCompanyName] = useState(job.company.name);
-    const [companyDescription, setCompanyDescription] = useState(job.company.description);
-    const [contactEmail, setContactEmail] = useState(job.contactEmail);
-    const [contactPhone, setContactPhone] = useState(job.contactPhone);
+    const [companyName, setCompanyName] = useState(job.companyName);
+    const [companyDescription, setCompanyDescription] = useState(job.companyDescription ? job?.companyDescription : "");
+    const [phone, setPhone] = useState(job.phone ? job?.phone : "");
 
     const navigate = useNavigate();
 
-    const {id} = useParams();
+    // const {id} = useParams();
 
-    const submitForm = (e) => {
+    const submitForm = async (e) => {
         e.preventDefault();
+        setError("")
+        try {
 
-        const updatedJob = {
-            id,
-            title,
-            type,
-            description,
-            location,
-            salary,
-            company: {
-                name: companyName,
-                description: companyDescription,
-                contactEmail,
-                contactPhone
-            },
-        };
-
-        updateJobSubmit(updatedJob);
-
-        toast.success("Job Updated Successfully")
-
-        return navigate(`/jobs/${id}`);
+            const res = await axios.patch(BASE_URL + `/job/${job._id}`, {
+                title,
+                jobType,
+                jobDescription,
+                location,
+                salary,
+                companyName,
+                companyDescription,
+                phone
+            }, { withCredentials: true })
+            // console.log(res)
+            dispatch(addJob(res.data.data))
+            toast.success("Job Updated Successfully")
+            return navigate(`/jobs/${job._id}`);
+        } catch (error) {
+            // console.log(error)
+            setError(error?.response?.data || "Something Went Wrong");
+        }
     }
     return (
         <section className="bg-indigo-50">
@@ -61,8 +68,8 @@ const EditJob = ({updateJobSubmit}) => {
                                 name="type"
                                 className="border rounded w-full py-2 px-3"
                                 required
-                                value={type}
-                                onChange={(e) => setType(e.target.value)}
+                                value={jobType}
+                                onChange={(e) => setJobType(e.target.value)}
                             >
                                 <option value="Full-Time">Full-Time</option>
                                 <option value="Part-Time">Part-Time</option>
@@ -98,8 +105,8 @@ const EditJob = ({updateJobSubmit}) => {
                                 className="border rounded w-full py-2 px-3"
                                 rows="4"
                                 placeholder="Add any job duties, expectations, requirements, etc"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                value={jobDescription}
+                                onChange={(e) => setJobDescription(e.target.value)}
                             ></textarea>
                         </div>
 
@@ -116,15 +123,15 @@ const EditJob = ({updateJobSubmit}) => {
                                 onChange={(e) => setSalary(e.target.value)}
                             >
                                 <option value="Under $50K">Under $50K</option>
-                                <option value="$50K - 60K">$50K - $60K</option>
-                                <option value="$60K - 70K">$60K - $70K</option>
-                                <option value="$70K - 80K">$70K - $80K</option>
-                                <option value="$80K - 90K">$80K - $90K</option>
-                                <option value="$90K - 100K">$90K - $100K</option>
-                                <option value="$100K - 125K">$100K - $125K</option>
-                                <option value="$125K - 150K">$125K - $150K</option>
-                                <option value="$150K - 175K">$150K - $175K</option>
-                                <option value="$175K - 200K">$175K - $200K</option>
+                                <option value="$50K-$60K">$50K - $60K</option>
+                                <option value="$60K-$70K">$60K - $70K</option>
+                                <option value="$70K-$80K">$70K - $80K</option>
+                                <option value="$80K-$90K">$80K - $90K</option>
+                                <option value="$90K-$100K">$90K - $100K</option>
+                                <option value="$100K-$125K">$100K - $125K</option>
+                                <option value="$125K-$150K">$125K - $150K</option>
+                                <option value="$150K-$175K">$150K - $175K</option>
+                                <option value="$175K-$200K">$175K - $200K</option>
                                 <option value="Over $200K">Over $200K</option>
                             </select>
                         </div>
@@ -181,23 +188,6 @@ const EditJob = ({updateJobSubmit}) => {
 
                         <div className="mb-4">
                             <label
-                                htmlFor="contact_email"
-                                className="block text-gray-700 font-bold mb-2"
-                            >Contact Email</label
-                            >
-                            <input
-                                type="email"
-                                id="contact_email"
-                                name="contact_email"
-                                className="border rounded w-full py-2 px-3"
-                                placeholder="Email address for applicants"
-                                required
-                                value={contactEmail}
-                                onChange={(e) => setContactEmail(e.target.value)}
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label
                                 htmlFor="contact_phone"
                                 className="block text-gray-700 font-bold mb-2"
                             >Contact Phone</label
@@ -208,12 +198,14 @@ const EditJob = ({updateJobSubmit}) => {
                                 name="contact_phone"
                                 className="border rounded w-full py-2 px-3"
                                 placeholder="Optional phone for applicants"
-                                value={contactPhone}
-                                onChange={(e) => setContactPhone(e.target.value)}
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
                             />
                         </div>
 
+                        <p className='text-red-500'>{error}</p>
                         <div>
+
                             <button
                                 className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
                                 type="submit"
