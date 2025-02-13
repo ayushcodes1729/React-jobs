@@ -13,44 +13,13 @@ import store from "./utils/store"
 
 
 export default function App() {
-  //add Job
-  const addJob = async (newJob) => {
-    const res = await fetch("/api/jobs", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newJob)
-    });
-    return;
-  }
-
-  //delete job
-  const deleteJob = async (id) => {
-    const res = await fetch(`/api/jobs/${id}`, {
-      method: 'DELETE',
-    })
-    return
-  }
-
-  //update job
-  const updateJob = async (job) => {
-    const res = await fetch(`/api/jobs/${job.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(job)
-    });
-    return;
-  }
   const router = createBrowserRouter(createRoutesFromElements(
     <Route path='/' element={<MainLayout />}>
       <Route index element={<HomePage />} />
       <Route path='/jobs' element={<JobsPage />} />
       <Route path='/edit-job/:id' element={<EditJob />} />
       <Route path='/jobs/:id' element={<JobPage />}/>
-      <Route path='/add-job' element={<AddJobsPage addJobSubmit={addJob} />} />
+      <Route path='/add-job' element={<AddJobsPage />} />
       <Route path='*' element={<NotFoundPage />} />
     </Route>
   ))

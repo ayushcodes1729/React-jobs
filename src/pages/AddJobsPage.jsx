@@ -6,7 +6,7 @@ import { BASE_URL } from '../utils/constants';
 import { useDispatch } from 'react-redux';
 import { addJob } from '../utils/jobSlice';
 
-const AddJobsPage = ({ addJobSubmit }) => {
+const AddJobsPage = () => {
   const [title, setTitle] = useState("");
   const [jobType, setJobType] = useState("Full-Time");
   const [location, setLocation] = useState("");
