@@ -1,1 +1,1 @@
-export const BASE_URL = "https://react-jobs-server.vercel.app/";
+export const BASE_URL = "https://react-jobs-server.vercel.app";
